@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>check-in-chart</title>
+    <link rel="stylesheet" href="check_in_chart.css">    
+    <style>
+      #root {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+   </head>
+   <script type="module" src="../dist/check_in_chart.js"></script>
+   <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      createChart(
+        "http://localhost:3000/public/data/data.json",
+        "http://localhost:3000/public/data/timeWindows.json"
+      );
+    })
+</script>
+   <body>
+    <div id="root">
+      <p>
+        <strong>Keyboard Controls:</strong> Use [ and ] to move between data points. 
+        Hold alt while using [ or ] to auto-scroll the view.
+        Press Esc to clear pin.
+        <br>
+        <strong>Mouse Controls:</strong> Hover over points to see details.
+        Click a point to pin its tooltip. Click anywhere else to unpin.
+      </p>
+
+      <div id="chart"></div>
+      <div id="button-container"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "name": "check-in-chart",
+  "version": "0.5.0",
+  "main": "dist/check_in_chart.js",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=dist/check_in_chart.js --sourcemap=inline --target=es2024 --format=esm --platform=browser --log-level=info",
+    "build:prod": "esbuild src/main.ts  --bundle --outfile=dist/check_in_chart.js --minify --target=es2024 --format=esm --platform=browser --log-level=warning --drop:console --tree-shaking=true",
+    "serve": "http-server .  -p 3000 -s",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "dev": "npm run build && (npm run serve)"
+  },
+  "description": "A visualization tool for displaying and analyzing student attendance data.",
+  "keywords": [
+    "d3",
+    "data visualization",
+    "attendance",
+    "education"
+  ],
+  "author": "Javier Solis",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "d3": "^7.9.0",
+    "random-words": "^2.0.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "esbuild": "^0.25.0",
+    "http-server": "^14.1.1",
+    "prettier": "3.5.0",
+    "typescript": "^5.7.3"
+  }
+}
