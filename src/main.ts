@@ -4,11 +4,7 @@ import { TimeWindowCollection } from "./timeWindows";
 import { ChartConfig } from "./config";
 import { DataPoint, DataPointCollection } from "./dataPoints";
 import { TooltipManager } from "./tooltips";
-import {
-  sideSectionXCoordinate,
-  sideSectionYCoordinate,
-  updatedSVGWidth,
-} from "./sideSection";
+import { drawSideSection, updatedSVGWidth } from "./sideSection";
 
 const { dimensions, styles, dataPoints } = ChartConfig;
 
@@ -109,7 +105,7 @@ export function getStatusColor(d: DataPoint): Color {
   const status = d.status;
   const is_la = d.lab_section == 6;
 
-  if (is_la){
+  if (is_la) {
     return Color.Gray;
   }
 
@@ -220,7 +216,7 @@ export async function createChart(
     .attr("stroke-width", styles.lineWidth)
     .attr("stroke-linecap", "round");
 
-    // Add main data points
+  // Add main data points
   svg
     .selectAll(".timeline-dot")
     .data(timelineData)
@@ -275,31 +271,9 @@ export async function createChart(
     });
 
   // Add side section data points separately
-  svg
-    .selectAll(".absent-dot")
-    .data(absentData)
-    .enter()
-    .append("circle")
-    .attr("class", "absent-dot")
-    .attr("r", dataPoints.radius.default)
-    .attr("cx", (d, i) => sideSectionXCoordinate(d, absentData))
-    .attr("cy", (d, i) => sideSectionYCoordinate(d, absentData))
-    .attr("fill", (d) => getStatusColor(d))
-    .on("mouseover", function (this: SVGCircleElement, event, d) {
-      d3.select(this)
-        .transition()
-        .duration(150)
-        .attr("r", dataPoints.radius.hover);
-      tooltipManager.showHover(d, event.pageX + 10, event.pageY - 28);
-    })
-    .on("mouseout", function (this: SVGCircleElement) {
-      d3.select(this)
-        .transition()
-        .duration(150)
-        .attr("r", dataPoints.radius.default);
-      tooltipManager.hideHover();
-    });
+  drawSideSection(svg, absentData, tooltipManager);
 
+  // Add axes and their labels
   createAxes(svg, xScale, yScale);
   addAxisLabels(svg);
 

@@ -1,6 +1,6 @@
 {
   "name": "check-in-chart",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "dist/check_in_chart.js",
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/check_in_chart.js --sourcemap=inline --target=es2024 --format=esm --platform=browser --log-level=info",
