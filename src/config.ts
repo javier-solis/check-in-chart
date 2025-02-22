@@ -3,6 +3,7 @@ export const ChartConfig = {
     fullWidth: 200000,
     visibleWidth: 1000,
     height: 500,
+    // todo: remove these margin values, they aren't necessary.
     margin: { top: 40, right: 30, bottom: 40, left: 50 },
   },
 

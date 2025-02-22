@@ -21,9 +21,9 @@ async function initializeData(dataPath: ValidURL, timeWindowsPath: ValidURL) {
   return { data, windowCollection };
 }
 
-function createScales(filteredData: DataPoint[], data: DataPoint[]) {
+function createScales(timelineData: DataPoint[], data: DataPoint[]) {
   // Create date values array for time scale domain
-  const dateValues = filteredData.map((d) => new Date(d.checkin_timestamp));
+  const dateValues = timelineData.map((d) => new Date(d.checkin_timestamp));
 
   // Time scale for x-axis
   const xScale = d3
@@ -105,6 +105,28 @@ function createAxes(
     .style("font-family", styles.font.family);
 }
 
+export function getStatusColor(d: DataPoint): Color {
+  const status = d.status;
+  const is_la = d.lab_section == 6;
+
+  if (is_la){
+    return Color.Gray;
+  }
+
+  switch (status) {
+    case Status.OnTime:
+      return Color.Green;
+    case Status.OnTimeOverride:
+      return Color.DarkGreen;
+    case Status.Late:
+      return Color.Yellow;
+    case Status.Absent:
+      return Color.Red;
+    default:
+      return Color.Gray;
+  }
+}
+
 export async function createChart(
   dataPath: ValidURL,
   timeWindowsPath: ValidURL,
@@ -132,11 +154,12 @@ export async function createChart(
   // Setup tooltips
   const tooltipManager = new TooltipManager("#chart");
 
-  // todo: should data be filtered?
-  const filteredData = data;
+  // todo: further filter both data sets to remove staff members
+  const timelineData = data.filter((d) => d.status !== Status.Absent);
+  const absentData = data.filter((d) => d.status === Status.Absent);
 
   // Create scales
-  const { xScale, yScale } = createScales(filteredData, data);
+  const { xScale, yScale } = createScales(timelineData, data);
 
   // Create buttons in the separate container
   const buttonContainer = d3
@@ -159,7 +182,7 @@ export async function createChart(
     .text("Jump to Latest")
     .on("click", () => {
       // Get the last data point's timestamp
-      const lastDataPoint = filteredData[filteredData.length - 1];
+      const lastDataPoint = timelineData[timelineData.length - 1];
       const lastX = xScale(lastDataPoint.checkin_timestamp);
       // Center the view on this point
       const scrollTo = lastX - dimensions.visibleWidth / 2;
@@ -182,7 +205,7 @@ export async function createChart(
   // Draw the filled area
   svg
     .append("path")
-    .datum(filteredData)
+    .datum(timelineData)
     .attr("d", area)
     .attr("fill", "rgba(74, 144, 226, 0.2)") // todo: set as a configchart var
     .attr("stroke", "none");
@@ -190,50 +213,26 @@ export async function createChart(
   // Draw line
   svg
     .append("path")
-    .datum(filteredData)
+    .datum(timelineData)
     .attr("d", line)
     .attr("fill", "none")
     .attr("stroke", styles.lineColor)
     .attr("stroke-width", styles.lineWidth)
     .attr("stroke-linecap", "round");
 
-  // Modify data points
-  // todo: move to its own function?
+    // Add main data points
   svg
-    .selectAll(".dot")
-    .data(filteredData)
+    .selectAll(".timeline-dot")
+    .data(timelineData)
     .enter()
     .append("circle")
     .attr("class", "dot")
     .attr("r", dataPoints.radius.default)
-    .attr("fill", (d) => {
-      switch (d.status) {
-        case Status.OnTime:
-          return Color.Green;
-        case Status.OnTimeOverride:
-          return Color.DarkGreen;
-        case Status.Late:
-          return Color.Yellow;
-        case Status.Absent:
-          return Color.Red;
-        default:
-          return Color.Gray;
-      }
-    })
+    .attr("fill", (d) => getStatusColor(d))
     .attr("cx", (d) => {
-      // todo: if student is actually a staff member, don't add them
-
-      // Add absent students to side section
-      if (d.status === Status.Absent) {
-        return sideSectionXCoordinate(d, data);
-      }
-      // For other data points, use regular timeline layout
       return xScale(d.checkin_timestamp);
     })
     .attr("cy", (d) => {
-      if (d.status === Status.Absent || !d.checkin_timestamp) {
-        return sideSectionYCoordinate(d, data);
-      }
       return yScale(d.global_position);
     })
     .on("mouseover", function (this: SVGCircleElement, event, d) {
@@ -265,7 +264,7 @@ export async function createChart(
       tooltipManager.pinDataPoint(
         index,
         data,
-        filteredData,
+        timelineData,
         xScale,
         yScale,
         svg,
@@ -273,6 +272,32 @@ export async function createChart(
         dimensions,
       );
       event.stopPropagation();
+    });
+
+  // Add side section data points separately
+  svg
+    .selectAll(".absent-dot")
+    .data(absentData)
+    .enter()
+    .append("circle")
+    .attr("class", "absent-dot")
+    .attr("r", dataPoints.radius.default)
+    .attr("cx", (d, i) => sideSectionXCoordinate(d, absentData))
+    .attr("cy", (d, i) => sideSectionYCoordinate(d, absentData))
+    .attr("fill", (d) => getStatusColor(d))
+    .on("mouseover", function (this: SVGCircleElement, event, d) {
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("r", dataPoints.radius.hover);
+      tooltipManager.showHover(d, event.pageX + 10, event.pageY - 28);
+    })
+    .on("mouseout", function (this: SVGCircleElement) {
+      d3.select(this)
+        .transition()
+        .duration(150)
+        .attr("r", dataPoints.radius.default);
+      tooltipManager.hideHover();
     });
 
   createAxes(svg, xScale, yScale);
@@ -291,7 +316,7 @@ export async function createChart(
 
   tooltipManager.attachKeyListeners(
     data,
-    filteredData,
+    timelineData,
     xScale,
     yScale,
     svg,
