@@ -6,6 +6,7 @@ export enum Color {
   Red = "red",
   Yellow = "yellow",
   Gray = "grey",
+  Orange = "orange"
 }
 
 export enum Status {
@@ -13,7 +14,8 @@ export enum Status {
   OnTimeOverride = "ONTIMEOVERRIDE",
   Late = "LATE",
   Absent = "ABSENT",
-  LateButAbsent = "LATEBUTABSENT",
+  InvalidInactive = "INVALIDINACTIVE",
+  // todo: add property for invalid due to duplicate qr code
 }
 
 export const URLSchema = z.string().url();

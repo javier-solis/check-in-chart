@@ -118,6 +118,8 @@ export function getStatusColor(d: DataPoint): Color {
       return Color.Yellow;
     case Status.Absent:
       return Color.Red;
+    case Status.InvalidInactive:
+      return Color.Orange;
     default:
       return Color.Gray;
   }
