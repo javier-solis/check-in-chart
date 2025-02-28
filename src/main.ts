@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { Color, Status, ValidURL } from "./miscTypes";
-import { TimeWindowCollection } from "./timeWindows";
+import { LabSection, TimeWindowCollection } from "./timeWindows";
 import { ChartConfig } from "./config";
 import { DataPoint, DataPointCollection } from "./dataPoints";
 import { TooltipManager } from "./tooltips";
@@ -103,11 +103,6 @@ function createAxes(
 
 export function getStatusColor(d: DataPoint): Color {
   const status = d.status;
-  const is_la = d.lab_section == 6;
-
-  if (is_la) {
-    return Color.Gray;
-  }
 
   switch (status) {
     case Status.OnTime:
@@ -120,7 +115,7 @@ export function getStatusColor(d: DataPoint): Color {
       return Color.Red;
     case Status.InvalidInactive:
       return Color.Orange;
-    default:
+    default: // should never happen
       return Color.Gray;
   }
 }
@@ -152,9 +147,21 @@ export async function createChart(
   // Setup tooltips
   const tooltipManager = new TooltipManager("#chart");
 
-  // todo: further filter both data sets to remove staff members
-  const timelineData = data.filter((d) => d.status !== Status.Absent);
-  const absentData = data.filter((d) => d.status === Status.Absent);
+  // Filter and split data
+  const timelineData: DataPoint[] = [];
+  const absentData: DataPoint[] = [];
+
+  data.forEach((d) => {
+    // Skip staff members
+    if (d.lab_section === LabSection.Six) return;
+
+    // Separate absent vs non-absent
+    if (d.status === Status.Absent) {
+      absentData.push(d);
+    } else {
+      timelineData.push(d);
+    }
+  });
 
   // Create scales
   const { xScale, yScale } = createScales(timelineData, data);
