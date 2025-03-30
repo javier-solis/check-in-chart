@@ -1,5 +1,4 @@
 node_modules/
-package-lock.json
 dist/
 public/data/
 notes.md
