@@ -1,3 +1,14 @@
+export const TooltipConfig = {
+  padding: "5px",
+  border: "1px solid #4a90e2",
+  borderRadius: "4px",
+  fontSize: "12px",
+  offset: {
+    x: 10,
+    y: -28,
+  },
+};
+
 export const ChartConfig = {
   dimensions: {
     fullWidth: 200000,
@@ -30,19 +41,6 @@ export const ChartConfig = {
     colors: {
       default: "green",
       highlight: "red",
-    },
-  },
-
-  // todo: make this its own variable?
-  // Tooltip configuration
-  tooltipConfig: {
-    padding: "5px",
-    border: "1px solid #4a90e2",
-    borderRadius: "4px",
-    fontSize: "12px",
-    offset: {
-      x: 10,
-      y: -28,
     },
   },
 

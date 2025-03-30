@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { DataPoint } from "./dataPoints";
-import { ChartConfig } from "./config";
+import { ChartConfig, TooltipConfig } from "./config";
 
 type PinnedIndex = number | null;
 
@@ -178,10 +178,10 @@ export class TooltipManager {
       .style("position", "absolute")
       .style("visibility", "hidden")
       .style("background", ChartConfig.styles.backgroundColor)
-      .style("border", ChartConfig.tooltipConfig.border)
-      .style("padding", ChartConfig.tooltipConfig.padding)
-      .style("border-radius", ChartConfig.tooltipConfig.borderRadius)
-      .style("font-size", ChartConfig.tooltipConfig.fontSize)
+      .style("border", TooltipConfig.border)
+      .style("padding", TooltipConfig.padding)
+      .style("border-radius", TooltipConfig.borderRadius)
+      .style("font-size", TooltipConfig.fontSize)
       .style("font-family", ChartConfig.styles.font.family);
   }
 
@@ -203,8 +203,8 @@ export class TooltipManager {
     this.pinnedTooltip
       .style("visibility", "visible")
       .html(this.getTooltipContent(dataPoint))
-      .style("left", `${x + ChartConfig.tooltipConfig.offset.x}px`)
-      .style("top", `${y + ChartConfig.tooltipConfig.offset.y}px`);
+      .style("left", `${x + TooltipConfig.offset.x}px`)
+      .style("top", `${y + TooltipConfig.offset.y}px`);
   }
 
   public hidePinned(): void {
