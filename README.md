@@ -1,6 +1,8 @@
 # check-in-chart
 
-A D3.js visualization tool for student check-in data, created and maintained for internal use at [MIT 6.190](https://llp.mit.edu/6190/).
+[![logo](/public/assets/logo_v1.svg)](https://github.com/javier-solis/check-in-chart)
+
+A single-page application for visualizing student check-in data. Built with [D3.js](https://d3js.org/) to provide an intuitive and informative interface. Created and maintained for internal use at [MIT 6.190](https://llp.mit.edu/6190/).
 
 ## Usage
 
@@ -9,14 +11,12 @@ A D3.js visualization tool for student check-in data, created and maintained for
 npm i
 ```
 
-### Quick Start with `index.html`
+### Quick Start
 1. Update the URLs in `public/index.html` to point to your JSON sources
-2. Serve the production page using:
-```sh
-npm run build:prod && npm run serve
-```
+2. Build and serve the production page: `npm run build:prod && npm run serve:prod`
+3. Visit: [http://localhost:3000/public/index.html](http://localhost:3000/public/index.html)
 
-### Integration with Existing Projects
+### Integrate with Existing Project
 1. Build the production `js` bundle:
 ```sh
 npm run build:prod
@@ -28,11 +28,11 @@ npm run build:prod
 <div id="button-container"></div>
 ```
 
-3. Import the built files:
+3. Import the built files, updating source path as needed:
 ```html
-<script type="module" src="/path/to/check_in_graphs.js"></script>
+<script type="module" src="/check_in_graphs.js"></script>
 
-<link rel="stylesheet" href="/path/to/check_in_graphs.css"> <!-- custom css is optional -->
+<link rel="stylesheet" href="/check_in_graphs.css"> <!-- custom css is optional -->
 ```
 
 4. Initialize the graph inside a script in your HTML file. Must be placed after your DOM elements and script imports, like so:
@@ -54,7 +54,7 @@ npm run build:prod
 
 ## Development
 1. Run: `npm run dev`
-2. Open: [http://localhost:3000/public/index.html](http://localhost:3000/public/index.html)
+2. Visit: [http://localhost:3000/public/index.html](http://localhost:3000/public/index.html)
 
 ## License
 `Apache 2.0`
