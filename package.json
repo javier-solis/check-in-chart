@@ -5,9 +5,10 @@
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/check_in_chart.js --sourcemap=inline --target=es2024 --format=esm --platform=browser --log-level=info",
     "build:prod": "esbuild src/main.ts  --bundle --outfile=dist/check_in_chart.js --minify --target=es2024 --format=esm --platform=browser --log-level=warning --drop:console --tree-shaking=true",
-    "serve": "http-server .  -p 3000 -s",
+    "serve:prod": "http-server . -p 3000 -c-1 -s",
+    "serve:dev": "http-server . -p 3000 -c-1",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "dev": "npm run build && (npm run serve)"
+    "dev": "npm run build && npm run serve:dev"
   },
   "description": "A visualization tool for displaying and analyzing student attendance data.",
   "keywords": [
